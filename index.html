@@ -1,0 +1,34 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Sudoku</title>
+<style>
+:root{--bg:#f4f1ea;--fg:#1d1d22;--card:#fff;--acc:#2a4d9b;--dim:#777;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root:not([data-theme="light"]){}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#17181d;--fg:#eee;--card:#25262e;--acc:#7da2ff;--dim:#999}}
+:root[data-theme="dark"]{--bg:#17181d;--fg:#eee;--card:#25262e;--acc:#7da2ff;--dim:#999}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px system-ui,-apple-system,Segoe UI,sans-serif;display:flex;justify-content:center}
+.screen{width:min(94vw,440px);padding:16px 0;text-align:center}.hidden{display:none!important}
+h1{font-size:2.4rem;margin:.6em 0}h3{text-transform:capitalize;margin:.8em 0 .2em}ol{margin:0;padding-left:1.4em;text-align:left}.dim{color:var(--dim);margin:0}
+button{font:inherit;padding:.8em 1em;border:0;border-radius:10px;background:var(--card);color:var(--fg);box-shadow:0 1px 3px #0003;cursor:pointer;text-transform:capitalize}
+button:active{transform:scale(.97)}.stack{display:flex;flex-direction:column;gap:10px;margin:20px auto;max-width:260px}
+.top{display:flex;justify-content:space-between;align-items:center;margin:6px 0 10px;font-size:1.3rem}
+.grid{display:grid;grid-template-columns:repeat(9,1fr);width:100%;aspect-ratio:1;background:#fff;color:#000;border:4px solid #222;border-radius:4px}
+.grid.erase{border-color:#e53935}.grid.maybe{border-color:#9e9e9e}
+.cell{display:flex;align-items:center;justify-content:center;font-size:clamp(18px,6vw,28px);border:1px solid #bbb;cursor:pointer;min-width:0}
+.cell.br{border-right:2px solid #222}.cell.bb{border-bottom:2px solid #222}
+.given{color:#000;font-weight:700}.user{color:#0b2a7a}.same{background:#ffe08a!important}.sel{outline:3px solid var(--acc);outline-offset:-3px;z-index:1}
+.hint{background:#a5e6b0!important}.bad{animation:sh .4s;background:#ffb3b3}@keyframes sh{25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+.notes{display:grid;grid-template-columns:repeat(3,1fr);width:100%;height:100%;color:#777;font-size:clamp(8px,2.4vw,12px)}
+.notes i{font-style:normal;display:flex;align-items:center;justify-content:center}.notes i.hl{background:#ffe08a;color:#000;font-weight:700;border-radius:3px}
+.pad{display:grid;grid-template-columns:repeat(9,1fr);gap:4px;margin-top:14px}.pad button{padding:.7em 0;font-size:1.2rem}
+.ctl{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}.ctl .on{background:var(--acc);color:#fff}
+.seed{font-size:.8rem;margin-top:14px;word-break:break-all}
+#modal{position:fixed;inset:0;background:#000a;display:flex;align-items:center;justify-content:center;z-index:9}
+#modal>div{background:var(--card);padding:22px;border-radius:14px;width:min(88vw,340px);text-align:center}#mbtns{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+</style></head><body>
+<div id="home" class="screen"><h1>Sudoku</h1><div class="stack"><button id="n-new">New game</button><button id="n-hs">Highscores</button></div></div>
+<div id="diff" class="screen hidden"><h1>Difficulty</h1><div id="d-btns" class="stack"></div><div id="status" class="dim"></div><button class="back">Back</button></div>
+<div id="hs" class="screen hidden"><h1>Highscores</h1><div id="hslist"></div><p><button class="back">Back</button></p></div>
+<div id="game" class="screen hidden"><div class="top"><button id="quit">✕</button><span id="lives"></span><b id="timer">00:00</b></div>
+<div id="grid" class="grid"></div><div id="pad" class="pad"></div>
+<div class="ctl"><button id="b-hint">💡 Hint</button><button id="b-erase">⌫ Erase</button><button id="b-maybe">✎ Maybe</button></div><div id="seed" class="dim seed"></div></div>
+<div id="modal" class="hidden"><div><div id="mtext"></div><div id="mbtns"></div></div></div>
